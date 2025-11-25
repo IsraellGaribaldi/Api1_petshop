@@ -19,6 +19,11 @@ export const updateCliente = async (
   const res = await axios.put<Cliente>(`${API_BASE}/clientes/${id}`, dados);
   return res.data;
 };
+export const createCliente = async (dados: Omit<Cliente, "id">): Promise<Cliente> => {
+  const res = await axios.post<Cliente>(`${API_BASE}/clientes`, dados);
+  return res.data;
+};
+
 
 export default {
     getClientes,

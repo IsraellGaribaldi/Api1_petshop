@@ -20,7 +20,7 @@ import SearchIcon from "@mui/icons-material/Search";
 import { useNavigate } from "react-router-dom";
 import ClientesTable from "../components/clientes/ClientesTable";
 import EditarClienteModal from "../components/clientes/EditarClienteModal";
-import CriarClienteModal from "../components/clientes/CriarClienteModal";
+import CriarClienteModal from "../components/clientes/CriarClientesModal";
 
 import { useDebounce } from "../hooks/useDebounce";
 
@@ -249,10 +249,11 @@ export const ClientesPage = () => {
       </Paper>
 
       <EditarClienteModal
-        open={clienteEditando !== null}
-        cliente={clienteEditando}
-        onClose={handleCloseEditModal}
-        onSave={handleSaveCliente}
+       open={!!clienteEditando}
+       cliente={clienteEditando}
+       onClose={handleCloseEditModal}
+       onClienteUpdated={handleSaveCliente}   // ✔️ agora está correto
+
       />
 
       <CriarClienteModal

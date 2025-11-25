@@ -14,7 +14,7 @@ import {
 interface EditarClienteModalProps {
   open: boolean;
   onClose: () => void;
-  cliente: Cliente;
+  cliente: Cliente | null;
   onClienteUpdated: (updatedCliente: Cliente) => void;
 }
 
@@ -25,10 +25,42 @@ export const EditarClienteModal = ({
   onClienteUpdated,
 }: EditarClienteModalProps) => {
 
-  const [formData, setFormData] = useState<Cliente>({
-    ...cliente,
-    pet: cliente.pet ? { ...cliente.pet } : undefined,
-  });
+  const [formData, setFormData] = useState<Cliente>(
+    cliente
+      ? {
+          id: cliente.id,
+          nome: cliente.nome,
+          telefone: cliente.telefone,
+          endereco: cliente.endereco,
+          email: cliente.email,
+          pet: cliente.pet
+            ? {
+                nome: cliente.pet.nome,
+                especie: cliente.pet.especie,
+                raça: cliente.pet.raça,
+                idade: cliente.pet.idade,
+              }
+            : {
+                nome: "",
+                especie: "",
+                raça: "",
+                idade: 0,
+              },
+        }
+      : {
+          id: 0,
+          nome: "",
+          telefone: "",
+          endereco: "",
+          email: "",
+          pet: {
+            nome: "",
+            especie: "",
+            raça: "",
+            idade: 0,
+          },
+        }
+  );
 
   const [salvando, setSalvando] = useState(false);
 

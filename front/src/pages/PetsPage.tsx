@@ -16,7 +16,7 @@ interface Cliente {
   email: string;
 }
 
-const PetCreate = () => {
+const PetsPage = () => {
   const [nome, setNome] = useState("");
   const [especie, setEspecie] = useState("");
   const [raca, setRaca] = useState("");
@@ -151,4 +151,4 @@ const PetCreate = () => {
   );
 };
 
-export default PetCreate;
+export default PetsPage;
