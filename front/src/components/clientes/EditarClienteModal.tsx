@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from "react";
-import type { Cliente } from "../types/Cliente";
-import { updateCliente } from "../services/clienteServices";
+import React, { useState } from "react";
+import type { Cliente } from "../../types/Cliente";
+import { updateCliente } from "../../services/ClienteServices";
 import {
   Dialog,
   DialogTitle,
@@ -19,38 +19,65 @@ interface EditarClienteModalProps {
 }
 
 export const EditarClienteModal = ({
-  open, onClose, cliente, onClienteUpdated,
+  open,
+  onClose,
+  cliente,
+  onClienteUpdated,
 }: EditarClienteModalProps) => {
-  const INITIAL_FORM_DATA: Cliente = {
-    ...cliente, // Espalha todas as propriedades do cliente inicial
+
+  const [formData, setFormData] = useState<Cliente>({
+    ...cliente,
     pet: cliente.pet ? { ...cliente.pet } : undefined,
-  };
+  });
 
-  const [formData, setFormData] = useState<Cliente>(INITIAL_FORM_DATA);
   const [salvando, setSalvando] = useState(false);
-  const [errors, setErrors] = useState<Record<string, string>>({});
 
+  // Atualiza form ao abrir modal (igual ao EditarPacienteModal)
   React.useEffect(() => {
     if (cliente && open) {
       setFormData({
         ...cliente,
-        pet: cliente.pet ? { ...cliente.pet } : undefined
+        pet: cliente.pet ? { ...cliente.pet } : undefined,
       });
     }
-  }, [cliente,open]);
+  }, [cliente, open]);
 
+  // Handle que também trata campos aninhados (pet.nome etc.)
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     const { name, value } = e.target;
-    setFormData((prev: Cliente) => ({ ...prev, [name]: value }));
+
+    // Detecta campos do tipo "pet.*"
+    if (name.startsWith("pet.")) {
+      const [, petField] = name.split(".");
+
+      setFormData((prev) => ({
+        ...prev,
+        pet: {
+          nome: prev.pet?.nome ?? "",
+          especie: prev.pet?.especie ?? "",
+          raça: prev.pet?.raça ?? "",
+          idade: prev.pet?.idade ?? 0,
+          [petField]: petField === "idade" ? Number(value) : value,
+        },
+      }));
+      return;
+    }
+
+    // Campos normais
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
   };
 
-  const handleSave = async () => { // Corrigido o nome da função
+  // Salvar alterações
+  const handleSave = async () => {
     setSalvando(true);
-   try {
-      await updateCliente(formData.id, formData); // Corrigido para updateCliente
-      onClienteUpdated(formData); // Corrigido para onClienteUpdated
+    try {
+      await updateCliente(formData.id, formData);
+      onClienteUpdated(formData);
       onClose();
     } catch (error) {
       console.error("Erro ao salvar cliente:", error);
@@ -58,16 +85,17 @@ export const EditarClienteModal = ({
     } finally {
       setSalvando(false);
     }
-
   };
- return (
+
+  return (
     <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
       <DialogTitle sx={{ fontWeight: 600, fontSize: "1.25rem" }}>
-        Editar Paciente
+        Editar Cliente
       </DialogTitle>
 
       <DialogContent>
         <Box sx={{ display: "flex", flexDirection: "column", gap: 2, mt: 2 }}>
+
           <TextField
             fullWidth
             label="Nome"
@@ -75,6 +103,24 @@ export const EditarClienteModal = ({
             value={formData.nome}
             onChange={handleInputChange}
             placeholder="Digite o nome completo"
+          />
+
+          <TextField
+            fullWidth
+            label="Telefone"
+            name="telefone"
+            value={formData.telefone}
+            onChange={handleInputChange}
+            placeholder="Digite o telefone"
+          />
+
+          <TextField
+            fullWidth
+            label="Endereço"
+            name="endereco"
+            value={formData.endereco}
+            onChange={handleInputChange}
+            placeholder="Digite o endereço"
           />
 
           <TextField
@@ -87,32 +133,52 @@ export const EditarClienteModal = ({
             placeholder="Digite o email"
           />
 
-          <TextField
-            fullWidth
-            label="CPF"
-            name="cpf"
-            value={formData.cpf}
-            onChange={handleInputChange}
-            placeholder="Digite o CPF"
-          />
+          {/* PET */}
+          <Box sx={{ mt: 2 }}>
+            <DialogTitle
+              sx={{ fontWeight: 500, fontSize: "1rem", p: 0, mb: 1 }}
+            >
+              Informações do Pet
+            </DialogTitle>
 
-          <TextField
-            fullWidth
-            label="Telefone"
-            name="telefone"
-            value={formData.telefone || ""}
-            onChange={handleInputChange}
-            placeholder="Digite o telefone"
-          />
+            <TextField
+              fullWidth
+              label="Nome do Pet"
+              name="pet.nome"
+              value={formData.pet?.nome || ""}
+              onChange={handleInputChange}
+              placeholder="Digite o nome do pet"
+            />
 
-          <TextField
-            fullWidth
-            label="Data de Nascimento"
-            name="dataNascimento"
-            value={formData.dataNascimento}
-            onChange={handleInputChange}
-            placeholder="YYYY-MM-DD"
-          />
+            <TextField
+              fullWidth
+              label="Espécie"
+              name="pet.especie"
+              value={formData.pet?.especie || ""}
+              onChange={handleInputChange}
+              placeholder="Ex: Cachorro, Gato..."
+            />
+
+            <TextField
+              fullWidth
+              label="Raça"
+              name="pet.raça"
+              value={formData.pet?.raça || ""}
+              onChange={handleInputChange}
+              placeholder="Digite a raça"
+            />
+
+            <TextField
+              fullWidth
+              label="Idade"
+              name="pet.idade"
+              type="number"
+              value={formData.pet?.idade || ""}
+              onChange={handleInputChange}
+              placeholder="Idade do pet"
+            />
+          </Box>
+
         </Box>
       </DialogContent>
 
