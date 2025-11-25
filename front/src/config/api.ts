@@ -23,6 +23,14 @@ export const API_BASE_URL = getApiUrl();
 // URLs dos endpoints
 export const API_ENDPOINTS = {
   // Auth
-  LOGIN: `${API_BASE_URL}/login`
+  LOGIN: `${API_BASE_URL}/login`,
+
+  FUNCIONARIO: `${API_BASE_URL}/funcionarios`,
+
+  CLIENTE: `${API_BASE_URL}/clientes`,
+  
+  PET: `${API_BASE_URL}/pets`,
+  
+  ATENDIMENTO: `${API_BASE_URL}/atendimentos`,
   
 };
