@@ -6,10 +6,6 @@ import petRoutes from "./petRoutes";
 import funcionarioRoutes from "./funcionarioRoutes";
 // Importa as rotas de clientes.
 import clienteRoutes from "./clienteRoutes";
-// Importa as rotas de produtos.
-import produtosRoutes from "./produtosRoutes";
-// Importa as rotas de vendas.
-import vendasRoutes from "./vendasRoutes";
 // importa a rota de login que vai ser usada para autenticação
 import loginRoutes from "./loginRoutes";
 // Cria uma nova instância do Router.
@@ -19,12 +15,8 @@ const router = Router();
 router.use("/pets", petRoutes);
 // Define que as rotas de funcionários serão acessadas a partir do caminho /funcionarios.
 router.use("/funcionarios", funcionarioRoutes);
-// Define que as rotas de produtos serão acessadas a partir do caminho /produtos.
-router.use("/produtos", produtosRoutes);
 // Define que as rotas de clientes serão acessadas a partir do caminho /clientes.
 router.use("/clientes", clienteRoutes);
-// Define que as rotas de vendas serão acessadas a partir do caminho /vendas.
-router.use("/vendas", vendasRoutes);
 // Define que as rotas de login serão acessadas a partir do caminho /login.
 router.use("/login", loginRoutes);
 
