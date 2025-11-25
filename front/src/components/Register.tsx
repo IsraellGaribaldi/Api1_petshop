@@ -170,9 +170,7 @@ const Register: React.FC = () => {
 
           <Typography textAlign="center" variant="body2" mt={2}>
             Já possui uma conta?{" "}
-            <MuiLink
-  component={RouterLink}
-  to="/register" style={{ textDecoration: "none", color: "blue", fontWeight: "bold" }}>Entrar</MuiLink>
+            <MuiLink component={RouterLink} to="/register" style={{ textDecoration: "none", color: "blue", fontWeight: "bold" }}>Entrar</MuiLink>
           </Typography>
         </Box>
       </Paper>
