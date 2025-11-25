@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import type { Cliente } from "../types/Cliente";
-import { updatePaciente } from "../services/clienteService";
+import { updateCliente } from "../services/clienteServices";
 import {
   Dialog,
   DialogTitle,
@@ -19,17 +19,10 @@ interface EditarClienteModalProps {
 }
 
 export const EditarClienteModal = ({
-  open,
-  onClose,
-  cliente,
-  onClienteUpdated,
+  open, onClose, cliente, onClienteUpdated,
 }: EditarClienteModalProps) => {
   const INITIAL_FORM_DATA: Cliente = {
-    id: cliente.id,
-    nome: cliente.nome,
-    telefone: cliente.telefone,
-    endereco: cliente.endereco,
-    email: cliente.email,
+    ...cliente, // Espalha todas as propriedades do cliente inicial
     pet: cliente.pet ? { ...cliente.pet } : undefined,
   };
 
@@ -42,7 +35,6 @@ export const EditarClienteModal = ({
       setFormData({
         ...cliente,
         pet: cliente.pet ? { ...cliente.pet } : undefined
-       
       });
     }
   }, [cliente,open]);
@@ -54,11 +46,11 @@ export const EditarClienteModal = ({
     setFormData((prev: Cliente) => ({ ...prev, [name]: value }));
   };
 
-  const handlesalve = async () => {
+  const handleSave = async () => { // Corrigido o nome da função
     setSalvando(true);
    try {
-      await updatePaciente(formData.id, formData);
-      onSave(formData);
+      await updateCliente(formData.id, formData); // Corrigido para updateCliente
+      onClienteUpdated(formData); // Corrigido para onClienteUpdated
       onClose();
     } catch (error) {
       console.error("Erro ao salvar cliente:", error);
