@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Link as RouterLink } from "react-router-dom";
 import {
   TextField,
   Button,
@@ -7,6 +8,7 @@ import {
   Paper,
   Alert,
   CircularProgress,
+  Link,
 } from "@mui/material";
 import { Login as LoginIcon } from "@mui/icons-material";
 import { z } from "zod";
@@ -163,6 +165,7 @@ const Login: React.FC = () => {
             disabled={isLoading}
           />
           
+        
           <Box
             display="flex"
             justifyContent="space-between"
@@ -174,6 +177,14 @@ const Login: React.FC = () => {
             <input type="checkbox" />
             <span style={{ marginLeft: 8 }}>Lembre de mim</span>
           </label>
+
+          
+          <Box textAlign="center" mt={2}>
+            <Typography variant="body2">
+              Não tem uma conta? Cadastre-se{" "}
+              <Link component={RouterLink} to="/register" style={{ textDecoration: "none", color: "blue", fontWeight: "bold" }}>aqui</Link>
+            </Typography>
+          </Box>    
 
           <Button
             type="submit"
