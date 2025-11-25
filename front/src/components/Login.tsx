@@ -162,6 +162,19 @@ const Login: React.FC = () => {
             helperText={validatePassword(password).error}
             disabled={isLoading}
           />
+          
+          <Box
+            display="flex"
+            justifyContent="space-between"
+            alignItems="center"
+            mt={1}
+            mb={1}
+          />
+          <label style={{ display: "flex", alignItems: "center", gap: 6 }}>
+            <input type="checkbox" />
+            <span style={{ marginLeft: 8 }}>Lembre de mim</span>
+          </label>
+
           <Button
             type="submit"
             variant="contained"
