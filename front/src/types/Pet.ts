@@ -1,5 +1,3 @@
-import type { Atendimento } from './Atendimento';
-
 export interface Pet {
   id:        number  
   nome:      String
@@ -8,5 +6,8 @@ export interface Pet {
   sexo:      String
   idade:     number
   idcliente: number
-  atendimentos:   Atendimento[]
+  Atendimento?: {
+    tipoAtendimento: string;
+    dataHora: string;
+  };
 }

@@ -11,6 +11,6 @@ export interface Atendimento {
   };
   funcionario?: {
     nome: string;
-    especialidade: string;
+    idfuncionario: number;
   };
 }
