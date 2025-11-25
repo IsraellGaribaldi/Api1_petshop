@@ -17,8 +17,8 @@ const Home: React.FC = () => {
           <Box textAlign="center" mb={2}>
             <Box display="flex" justifyContent="center" mb={1}>
               <Avatar
-                src="https://cdn-icons-png.flaticon.com/512/7858/7858230.png"
-                alt="Clínica Médica"
+                src="https://t3.ftcdn.net/jpg/05/52/19/26/240_F_552192613_1gcoRi4z2sfyheakGj6S67wAgJ19zo6g.jpg"
+                alt="Pet Shop Logo"
                 sx={{
                   width: AVATAR_SIZE,
                   height: AVATAR_SIZE,
@@ -28,7 +28,7 @@ const Home: React.FC = () => {
               />
             </Box>
             <Typography variant="h5" component="h1" fontWeight={600} mb={2}>
-              Clínica Médica
+              PetShop Atendimentos
             </Typography>
             <Button
               variant="contained"
@@ -36,9 +36,9 @@ const Home: React.FC = () => {
               fullWidth
               sx={{ mb: 2 }}
               type="button"
-              onClick={() => navigate("/pacientes")}
+              onClick={() => navigate("/clientes")}
             >
-              Pacientes
+              Clientes
             </Button>
             <Button
               variant="contained"
@@ -46,7 +46,7 @@ const Home: React.FC = () => {
               fullWidth
               type="button"
             >
-              Consultas
+              Atendimentos
             </Button>
           </Box>
         </Paper>
