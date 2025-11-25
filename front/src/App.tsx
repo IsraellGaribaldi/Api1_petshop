@@ -10,6 +10,7 @@ export default function App() {
       <Route path="/" element={<Login />} />
       <Route path="/register" element={<Register />} />
       <Route path="/pets" element={<PetsPage />} />
+      <Route path="*" element={<div>Página não encontrada</div>} />
     </Routes>
   );
 }
