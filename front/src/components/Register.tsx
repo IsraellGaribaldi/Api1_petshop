@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import { Link as RouterLink } from "react-router-dom";
+import { Link as MuiLink } from "@mui/material";
+
 import {
   TextField,
   Button,
@@ -12,7 +14,6 @@ import {
   FormControlLabel,
   Radio,
   FormLabel,
-  Link,
 } from "@mui/material";
 import { PersonAdd as PersonAddIcon } from "@mui/icons-material";
 import axios from "axios";
@@ -169,7 +170,7 @@ const Register: React.FC = () => {
 
           <Typography textAlign="center" variant="body2" mt={2}>
             Já possui uma conta?{" "}
-            <Link component={RouterLink} to="/" style={{ textDecoration: "none", color: "blue", fontWeight: "bold" }}>Entrar</Link>
+            <MuiLink component={RouterLink} to="/register" style={{ textDecoration: "none", color: "blue", fontWeight: "bold" }}>Entrar</MuiLink>
           </Typography>
         </Box>
       </Paper>

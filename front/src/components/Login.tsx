@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import { Link as RouterLink } from "react-router-dom";
+import { Link as MuiLink } from "@mui/material";
+
 import {
   TextField,
   Button,
@@ -8,7 +10,6 @@ import {
   Paper,
   Alert,
   CircularProgress,
-  Link,
 } from "@mui/material";
 import { Login as LoginIcon } from "@mui/icons-material";
 import { z } from "zod";
@@ -182,7 +183,7 @@ const Login: React.FC = () => {
           <Box textAlign="center" mt={2}>
             <Typography variant="body2">
               Não tem uma conta? Cadastre-se{" "}
-              <Link component={RouterLink} to="/register" style={{ textDecoration: "none", color: "blue", fontWeight: "bold" }}>aqui</Link>
+              <MuiLink component={RouterLink} to="/register" style={{ textDecoration: "none", color: "blue", fontWeight: "bold" }}>aqui</MuiLink>
             </Typography>
           </Box>    
 
