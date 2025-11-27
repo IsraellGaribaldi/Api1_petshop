@@ -5,6 +5,7 @@ const AVATAR_SIZE = 72;
 
 const Home: React.FC = () => {
   const navigate = useNavigate();
+
   return (
     <Box position="relative" minHeight="100vh" width="100vw">
       <Box
@@ -27,9 +28,11 @@ const Home: React.FC = () => {
                 slotProps={{ img: { loading: "lazy" } }}
               />
             </Box>
+
             <Typography variant="h5" component="h1" fontWeight={600} mb={2}>
               PetShop Atendimentos
             </Typography>
+
             <Button
               variant="contained"
               color="primary"
@@ -40,11 +43,14 @@ const Home: React.FC = () => {
             >
               Clientes
             </Button>
+
+            {/* ➜ Botão atualizado para navegar para /atendimentos */}
             <Button
               variant="contained"
               color="secondary"
               fullWidth
               type="button"
+              onClick={() => navigate("/atendimentos")}
             >
               Atendimentos
             </Button>

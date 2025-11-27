@@ -1,6 +1,6 @@
 import { useEffect, useState, useCallback, useMemo } from "react";
-import type { Cliente } from "../types/Cliente";
-import { getClientes, deleteCliente } from "../services/ClienteServices";
+import type { Atendimento } from "../types/Atendimento";
+import { getAtendimentos, deleteAtendimento } from "../services/AtendimentoServices";
 
 import {
   Box,
@@ -18,9 +18,10 @@ import {
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import SearchIcon from "@mui/icons-material/Search";
 import { useNavigate } from "react-router-dom";
-import ClientesTable from "../components/clientes/ClientesTable";
-import EditarClienteModal from "../components/clientes/EditarClienteModal";
-import CriarClienteModal from "../components/clientes/CriarClientesModal";
+
+import AtendimentosTable from "../components/atendimentos/AtendimentosTable";
+import EditarAtendimentoModal from "../components/atendimentos/EditarAtendimentoModal.tsx";
+import CriarAtendimentoModal from "../components/atendimentos/CriarAtendimentoModal";
 
 import { useDebounce } from "../hooks/useDebounce";
 
@@ -30,10 +31,10 @@ type SnackbarState = {
   severity: "success" | "error" | "info" | "warning";
 };
 
-export const ClientesPage = () => {
+const AtendimentosPage = () => {
   const navigate = useNavigate();
 
-  const [clientes, setClientes] = useState<Cliente[]>([]);
+  const [atendimentos, setAtendimentos] = useState<Atendimento[]>([]);
   const [deletingId, setDeletingId] = useState<number | null>(null);
 
   const [searchTerm, setSearchTerm] = useState("");
@@ -43,45 +44,63 @@ export const ClientesPage = () => {
     severity: "info",
   });
 
-  const [clienteEditando, setClienteEditando] = useState<Cliente | null>(null);
+  const [atendimentoEditando, setAtendimentoEditando] = useState<Atendimento | null>(null);
   const [abrirModalCriar, setAbrirModalCriar] = useState<boolean>(false);
 
-  // Carregar clientes
+  const [pets, setPets] = useState<{ id: number; nome: string }[]>([]);
+  const [funcionarios, setFuncionarios] = useState<{ idfuncionario: number; nome: string }[]>([]);
+
   useEffect(() => {
-    const carregarClientes = async () => {
+    const carregar = async () => {
       try {
-        const data = await getClientes();
-        setClientes(data);
-      } catch (error) {
-        console.error("Erro ao buscar clientes:", error);
+        const data = await getAtendimentos();
+        setAtendimentos(data);
+      } catch (err) {
         setSnackbar({
           open: true,
-          message: "Erro ao buscar clientes.",
+          message: "Erro ao carregar atendimentos.",
           severity: "error",
         });
       }
     };
 
-    carregarClientes();
+    carregar();
   }, []);
 
-  // Deletar cliente
+  useEffect(() => {
+    const carregarListas = async () => {
+      try {
+        // TODO: substituir por seus serviços reais de pets e funcionários
+        setPets([]);
+        setFuncionarios([]);
+      } catch (err) {
+        setSnackbar({
+          open: true,
+          message: "Erro ao carregar pets ou funcionários.",
+          severity: "error",
+        });
+      }
+    };
+
+    carregarListas();
+  }, []);
+
   const handleDelete = useCallback(async (id: number) => {
     setDeletingId(id);
 
     try {
-      await deleteCliente(id);
-      setClientes((prev) => prev.filter((c) => c.id !== id));
+      await deleteAtendimento(id);
+      setAtendimentos((prev) => prev.filter((a) => a.id !== id));
+
       setSnackbar({
         open: true,
-        message: "Cliente removido com sucesso.",
+        message: "Atendimento removido.",
         severity: "success",
       });
-    } catch (error) {
-      console.error("Erro ao deletar cliente:", error);
+    } catch (err) {
       setSnackbar({
         open: true,
-        message: "Erro ao deletar cliente.",
+        message: "Erro ao deletar atendimento.",
         severity: "error",
       });
     } finally {
@@ -89,56 +108,50 @@ export const ClientesPage = () => {
     }
   }, []);
 
-  // Abrir modal editar
-  const handleOpenEditModal = useCallback((cliente: Cliente) => {
-    setClienteEditando(cliente);
+  const handleOpenEditModal = useCallback((a: Atendimento) => {
+    setAtendimentoEditando(a);
   }, []);
 
-  const handleCloseEditModal = useCallback(() => {
-    setClienteEditando(null);
-  }, []);
+  const handleCloseEditModal = () => setAtendimentoEditando(null);
 
-  // Salvar cliente atualizado
-  const handleSaveCliente = useCallback((clienteAtualizado: Cliente) => {
-    setClientes((prev) =>
-      prev.map((c) => (c.id === clienteAtualizado.id ? clienteAtualizado : c))
+  const handleSave = useCallback((atualizado: Atendimento) => {
+    setAtendimentos((prev) =>
+      prev.map((a) => (a.id === atualizado.id ? atualizado : a))
     );
 
     setSnackbar({
       open: true,
-      message: "Cliente atualizado com sucesso.",
+      message: "Atendimento atualizado.",
       severity: "success",
     });
   }, []);
 
-  // Após criar um novo cliente
-  const handleSucessoCriarCliente = useCallback((novo: Cliente) => {
-    setClientes((prev) => [...prev, novo]);
+  const handleSucessoCriar = useCallback((novo: Atendimento) => {
+    setAtendimentos((prev) => [...prev, novo]);
+
     setSnackbar({
       open: true,
-      message: "Cliente cadastrado com sucesso.",
+      message: "Atendimento criado com sucesso.",
       severity: "success",
     });
   }, []);
 
-  // Busca com debounce
-  const debouncedSearchTerm = useDebounce(searchTerm, 300);
+  const debouncedTermo = useDebounce(searchTerm, 300);
 
-  const clientesFiltrados = useMemo(() => {
-    if (!debouncedSearchTerm.trim()) return clientes;
+  const atendimentosFiltrados = useMemo(() => {
+    if (!debouncedTermo) return atendimentos;
 
-    const termo = debouncedSearchTerm.toLowerCase().trim();
+    const termo = debouncedTermo.toLowerCase().trim();
 
-    return clientes.filter((c) => {
+    return atendimentos.filter((a) => {
       return (
-        c.nome.toLowerCase().includes(termo) ||
-        c.email.toLowerCase().includes(termo) ||
-        c.telefone.includes(termo) ||
-        c.endereco.toLowerCase().includes(termo) ||
-        (c.pet?.nome.toLowerCase().includes(termo) ?? false)
+        a.tipoAtendimento.toLowerCase().includes(termo) ||
+        a.dataHora.includes(termo) ||
+        a.funcionario?.nome?.toLowerCase().includes(termo) ||
+        a.pet?.nome?.toLowerCase().includes(termo)
       );
     });
-  }, [clientes, debouncedSearchTerm]);
+  }, [atendimentos, debouncedTermo]);
 
   return (
     <Box
@@ -156,8 +169,7 @@ export const ClientesPage = () => {
           maxWidth: 1000,
           p: 3,
           position: "relative",
-          bgcolor:
-            theme.palette.mode === "dark" ? "#242424" : "background.paper",
+          bgcolor: theme.palette.mode === "dark" ? "#242424" : "background.paper",
           color: theme.palette.text.primary,
           borderRadius: 2,
         })}
@@ -166,19 +178,19 @@ export const ClientesPage = () => {
           aria-label="voltar"
           onClick={() => navigate("/")}
           size="small"
-          sx={{ position: "absolute", left: 16, top: 16 }}
+          sx={{ position: "absolute", top: 16, left: 16 }}
         >
           <ArrowBackIcon fontSize="small" />
         </IconButton>
 
         <Typography variant="h5" fontWeight={600} mb={3} textAlign="center">
-          Lista de Clientes
+          Atendimentos
         </Typography>
 
         <Box mb={3}>
           <TextField
             fullWidth
-            placeholder="Buscar por nome, email, telefone, endereço ou pet..."
+            placeholder="Buscar por tipo, data, cliente ou pet..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             slotProps={{
@@ -193,42 +205,38 @@ export const ClientesPage = () => {
             size="small"
           />
 
-          {debouncedSearchTerm && (
+          {debouncedTermo && (
             <Box mt={1} display="flex" alignItems="center" gap={1}>
               <Typography variant="body2" color="text.secondary">
                 Resultados encontrados:
               </Typography>
 
               <Chip
-                label={clientesFiltrados.length}
+                label={atendimentosFiltrados.length}
                 size="small"
                 color="primary"
                 variant="outlined"
               />
 
-              {clientesFiltrados.length !== clientes.length && (
+              {atendimentosFiltrados.length !== atendimentos.length && (
                 <Typography variant="body2" color="text.secondary">
-                  de {clientes.length} total
+                  de {atendimentos.length} total
                 </Typography>
               )}
             </Box>
           )}
         </Box>
 
-        <ClientesTable
-          clientes={clientesFiltrados}
+        <AtendimentosTable
+          atendimentos={atendimentosFiltrados}
           deletingId={deletingId}
           onDelete={handleDelete}
           onEdit={handleOpenEditModal}
         />
 
         <Box mt={3} display="flex" justifyContent="flex-end">
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={() => setAbrirModalCriar(true)}
-          >
-            Novo Cliente
+          <Button variant="contained" color="primary" onClick={() => setAbrirModalCriar(true)}>
+            Novo Atendimento
           </Button>
         </Box>
 
@@ -248,21 +256,22 @@ export const ClientesPage = () => {
         </Snackbar>
       </Paper>
 
-      <EditarClienteModal
-       open={!!clienteEditando}
-       cliente={clienteEditando}
-       onClose={handleCloseEditModal}
-       onClienteUpdated={handleSaveCliente}   // ✔️ agora está correto
-
+      <EditarAtendimentoModal
+        open={!!atendimentoEditando}
+        atendimento={atendimentoEditando}
+        onClose={handleCloseEditModal}
+        onAtendimentoUpdated={handleSave}
       />
 
-      <CriarClienteModal
+      <CriarAtendimentoModal
         open={abrirModalCriar}
         onClose={() => setAbrirModalCriar(false)}
-        onSuccess={handleSucessoCriarCliente}
+        onSuccess={handleSucessoCriar}
+        pets={pets}
+        funcionarios={funcionarios}
       />
     </Box>
   );
 };
 
-export default ClientesPage;
+export default AtendimentosPage;
