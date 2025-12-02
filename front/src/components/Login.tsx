@@ -18,6 +18,7 @@ import axios from "axios";
 const emailSchema = z.email();
 const passwordSchema = z.string().min(4);
 
+// Interface usada para enviar os dados no submit
 interface LoginFormData {
   email: string;
   password: string;
@@ -34,8 +35,11 @@ interface LoginResponse {
 }
 
 const Login: React.FC = () => {
-  const [email, setEmail] = useState<string>("");
-  const [password, setPassword] = useState<string>("");
+  const [formData, setFormData] = useState<LoginFormData>({
+    email: "",
+    password: "",
+  });
+
   const [error, setError] = useState<string>("");
   const [success, setSuccess] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -59,18 +63,22 @@ const Login: React.FC = () => {
   };
 
   const isFormValid =
-    validateEmail(email).isValid && validatePassword(password).isValid;
+    validateEmail(formData.email).isValid &&
+    validatePassword(formData.password).isValid;
 
-  const handleEmailChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setEmail(event.target.value);
+  const handleInputChange = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    setFormData({
+      ...formData,
+      [event.target.name]: event.target.value,
+    });
     setError("");
   };
 
-  const handlePasswordChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setPassword(event.target.value);
-    setError("");
-  };
-  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (
+    event: React.FormEvent<HTMLFormElement>
+  ) => {
     event.preventDefault();
     setError("");
     setSuccess("");
@@ -85,25 +93,18 @@ const Login: React.FC = () => {
     try {
       const response = await axios.post<LoginResponse>(
         "http://localhost:3333/login",
-        {
-          email,
-          password,
-        }
+        formData
       );
 
-      // Axios automaticamente trata HTTP 200-299 como sucesso
       const data = response.data;
       setSuccess(data.message || "Login realizado com sucesso!");
     } catch (error) {
-      // Axios automaticamente trata códigos de erro como exceção
       if (axios.isAxiosError(error)) {
-        // Erro HTTP (400, 401, 403, 500, etc.)
         const errorMessage =
           error.response?.data?.message ||
           `Erro ${error.response?.status}: ${error.response?.statusText}`;
         setError(errorMessage);
       } else {
-        // Erro de rede ou outros
         const errorMessage =
           error instanceof Error
             ? error.message
@@ -132,60 +133,64 @@ const Login: React.FC = () => {
             Faça login para acessar o sistema
           </Typography>
         </Box>
-        {error && (
-          <Alert severity="error" sx={{ mb: 2 }}>
-            {error}
-          </Alert>
-        )}
-        {success && (
-          <Alert severity="success" sx={{ mb: 2 }}>
-            {success}
-          </Alert>
-        )}
+
+        {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
+        {success && <Alert severity="success" sx={{ mb: 2 }}>{success}</Alert>}
+
         <Box component="form" noValidate onSubmit={handleSubmit}>
           <TextField
             label="Email"
+            name="email"
             type="email"
             fullWidth
             margin="normal"
-            value={email}
-            onChange={handleEmailChange}
-            error={email.length > 0 && !validateEmail(email).isValid}
-            helperText={validateEmail(email).error}
+            value={formData.email}
+            onChange={handleInputChange}
+            error={
+              formData.email.length > 0 &&
+              !validateEmail(formData.email).isValid
+            }
+            helperText={validateEmail(formData.email).error}
             disabled={isLoading}
           />
+
           <TextField
             label="Senha"
+            name="password"
             type="password"
             fullWidth
             margin="normal"
-            value={password}
-            onChange={handlePasswordChange}
-            error={password.length > 0 && !validatePassword(password).isValid}
-            helperText={validatePassword(password).error}
+            value={formData.password}
+            onChange={handleInputChange}
+            error={
+              formData.password.length > 0 &&
+              !validatePassword(formData.password).isValid
+            }
+            helperText={validatePassword(formData.password).error}
             disabled={isLoading}
           />
-          
-        
-          <Box
-            display="flex"
-            justifyContent="space-between"
-            alignItems="center"
-            mt={1}
-            mb={1}
-          />
+
           <label style={{ display: "flex", alignItems: "center", gap: 6 }}>
             <input type="checkbox" />
             <span style={{ marginLeft: 8 }}>Lembre de mim</span>
           </label>
 
-          
           <Box textAlign="center" mt={2}>
             <Typography variant="body2">
               Não tem uma conta? Cadastre-se{" "}
-              <MuiLink component={RouterLink} to="/register" style={{ textDecoration: "none", color: "blue", fontWeight: "bold" }}>aqui</MuiLink>
+              <MuiLink
+                component={RouterLink}
+                to="/register"
+                style={{
+                  textDecoration: "none",
+                  color: "blue",
+                  fontWeight: "bold",
+                }}
+              >
+                aqui
+              </MuiLink>
             </Typography>
-          </Box>    
+          </Box>
 
           <Button
             type="submit"
@@ -196,7 +201,8 @@ const Login: React.FC = () => {
             sx={{
               mt: 2,
               opacity: isFormValid && !isLoading ? 1 : 0.6,
-              cursor: isFormValid && !isLoading ? "pointer" : "not-allowed",
+              cursor:
+                isFormValid && !isLoading ? "pointer" : "not-allowed",
             }}
           >
             {isLoading ? (
