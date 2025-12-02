@@ -70,3 +70,15 @@ model Solicitacao {
   updatedAt      DateTime     @updatedAt
   @@map("solicitacao")
 }
+
+model Agendamento {
+  id        Int      @id @default(autoincrement())
+  clienteId Int
+  petId     Int
+  servico   String
+  data      DateTime
+  criadoEm  DateTime @default(now())
+
+  cliente   Cliente   @relation(fields: [clienteId], references: [id])
+  pet       Pet       @relation(fields: [petId], references: [id])
+}
