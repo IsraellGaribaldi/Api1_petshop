@@ -39,7 +39,7 @@ const getStatusColor = (status: Solicitacao['status']): "default" | "primary" | 
 /**
  * Formata a data para exibição.
  */
-const formatDate = (date: Date): string => {
+const formatDate = (date: Date | string): string => {
   // Converte a string ou Date para um objeto Date
   const dateObj = date instanceof Date ? date : new Date(date);
   return dateObj.toLocaleDateString('pt-BR', {

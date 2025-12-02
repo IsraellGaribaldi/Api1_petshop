@@ -74,6 +74,8 @@ model Solicitacao {
   status         String
   createdAt      DateTime     @default(now())
   updatedAt      DateTime     @updatedAt
+  clienteId      Int
+  cliente        Cliente      @relation(fields: [clienteId], references: [id])
   @@map("solicitacao")
 }
 
