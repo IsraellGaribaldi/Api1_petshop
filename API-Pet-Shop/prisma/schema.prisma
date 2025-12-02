@@ -19,6 +19,7 @@ model Pet {
   idade     Int
   idcliente Int
   atendimentos   Atendimento[]
+  agendamentos  Agendamento[]
   cliente   Cliente @relation(fields: [idcliente], references: [id])
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
