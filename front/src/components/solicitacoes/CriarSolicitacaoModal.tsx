@@ -3,7 +3,9 @@ import { useState, useCallback } from "react";
 import type { Solicitacao } from "../../types/solicitacao"; 
 // Importa o serviço de criação de Solicitação
 import { createSolicitacao } from "../../services/SolicitacaoServices"; 
-import type { SolicitacaoCreateData } from "../../services/SolicitacaoServices"; // Tipagem de input de criação
+// 🚨 NOVO IMPORT NECESSÁRIO
+import { validateCreateSolicitacao } from "../../schemas/solicitacaoValidation"; 
+
 import {
   Dialog,
   DialogTitle,
@@ -20,12 +22,10 @@ import {
 interface CriarSolicitacaoModalProps {
   open: boolean;
   onClose: () => void;
-  // O ID do cliente que está criando esta solicitação
   clienteId: number; 
   onSuccess: (novaSolicitacao: Solicitacao) => void;
 }
 
-// O estado do formulário só precisa da descrição
 const INITIAL_FORM_DATA = {
   descricao: "",
 };
@@ -37,7 +37,6 @@ export const CriarSolicitacaoModal = ({
   clienteId,
   onSuccess,
 }: CriarSolicitacaoModalProps) => {
-  // Estado para os dados do formulário
   const [formData, setFormData] = useState(INITIAL_FORM_DATA);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [salvando, setSalvando] = useState(false);
@@ -52,7 +51,6 @@ export const CriarSolicitacaoModal = ({
         [name]: value, 
       }));
 
-      // Limpa erro ao digitar (somente o erro de 'descricao')
       if (errors.descricao) {
         setErrors((prev) => ({ ...prev, descricao: "" }));
       }
@@ -60,34 +58,34 @@ export const CriarSolicitacaoModal = ({
     [errors]
   );
 
-  // --- Handler de Salvar ---
+  // --- Handler de Salvar (Com Validação Zod) ---
   const handleSave = useCallback(async () => {
-    // 1. Validação Básica
-    const descricao = formData.descricao.trim();
+    setErrors({});
 
-    if (descricao.length < 10) {
-      setErrors({ descricao: "A descrição da solicitação deve ter pelo menos 10 caracteres." });
-      return;
-    }
-    
-    // 2. Prepara os dados para a API
-    const dataToSend: SolicitacaoCreateData = {
-        descricao: descricao,
-        clienteId: Number(clienteId), // Garantir que é number
+    const dataToValidate: any = {
+      descricao: formData.descricao,
+      clienteId: clienteId,
     };
 
+    const validation = validateCreateSolicitacao(dataToValidate); 
+
+    if (!validation.success) {
+      setErrors(validation.errors);
+      return;
+    }
+
     setSalvando(true);
-    setErrors({}); // Limpa erros antes de enviar
-    
+
     try {
-      // 3. Chamada à API
-      // O servidor irá atribuir o 'status' como 'Pendente' e gerar 'id' e datas.
-      const novaSolicitacao = await createSolicitacao(dataToSend);
-      
-      // 4. Sucesso
+      // Usamos validation.data que é a versão tipada e validada pelo Zod
+      const novaSolicitacao = await createSolicitacao(validation.data);
+
       onSuccess(novaSolicitacao);
-      setFormData(INITIAL_FORM_DATA); // Reseta o formulário
+      
+      // ✅ CORRIGIDO: Reset do formulário e fechar o modal
+      setFormData(INITIAL_FORM_DATA);
       onClose();
+      
     } catch (error) {
       console.error("Erro ao criar solicitação:", error);
       setErrors({ submit: "Erro ao criar solicitação. Verifique sua conexão e tente novamente." });
@@ -125,8 +123,8 @@ export const CriarSolicitacaoModal = ({
             onChange={handleInputChange}
             placeholder="Ex: Preciso de suporte para a conta XXX. O problema é..."
             required
-            multiline // Permite múltiplas linhas
-            rows={5} // Define a altura inicial
+            multiline 
+            rows={5} 
             error={!!errors.descricao}
             helperText={errors.descricao}
           />
@@ -178,4 +176,3 @@ export const CriarSolicitacaoModal = ({
 };
 
 export default CriarSolicitacaoModal;
-
