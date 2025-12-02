@@ -8,8 +8,9 @@ import clienteRoutes from "./routes/clienteRoutes.js";
 import funcionarioRoutes from "./routes/funcionarioRoutes.js";
 import petRoutes from "./routes/petRoutes.js";
 import loginRoutes from "./routes/loginRoutes.js";
+import agendamentoRoutes from "./routes/agendamentoRoutes.js";
 
-const app = express();
+const app = express(); // ✔ TEM QUE VIR ANTES DE app.use()
 
 // Middlewares
 app.use(cors());
@@ -24,6 +25,7 @@ app.use("/clientes", clienteRoutes);
 app.use("/funcionarios", funcionarioRoutes);
 app.use("/pets", petRoutes);
 app.use("/auth", loginRoutes);
+app.use("/agendamentos", agendamentoRoutes);
 
 // Rota padrão
 app.get("/", (req, res) => {
