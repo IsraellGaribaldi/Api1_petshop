@@ -10,8 +10,8 @@ import AtendimentosPage from "./pages/AtendimentosPage";
 export default function App() {
   return (
     <Routes>
-      <Route path="/login" element={<Login />} />
-      <Route path="/" element={<Home />} />
+      <Route path="/" element={<Login />} />
+      <Route path="/home" element={<Home />} />
       <Route path="/register" element={<Register />} />
       <Route path="/pets" element={<PetsPage />} />
       <Route path="/clientes" element={<ClientesPage />} />
