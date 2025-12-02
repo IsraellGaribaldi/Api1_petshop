@@ -170,6 +170,14 @@ exports.Prisma.SolicitacaoScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
+exports.Prisma.AgendamentoScalarFieldEnum = {
+  id: 'id',
+  data: 'data',
+  servico: 'servico',
+  clienteId: 'clienteId',
+  petId: 'petId'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -191,7 +199,8 @@ exports.Prisma.ModelName = {
   Cliente: 'Cliente',
   Funcionario: 'Funcionario',
   Atendimento: 'Atendimento',
-  solicitacao: 'solicitacao'
+  Solicitacao: 'Solicitacao',
+  Agendamento: 'Agendamento'
 };
 
 /**
