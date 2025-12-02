@@ -18,6 +18,7 @@ model Pet {
   idade        Int
   idcliente    Int
   atendimentos Atendimento[]
+  agendamentos Agendamento[]
   cliente      Cliente       @relation(fields: [idcliente], references: [id])
   createdAt    DateTime      @default(now())
   updatedAt    DateTime      @updatedAt
@@ -27,14 +28,15 @@ model Pet {
 
 // tabela dos clientes 
 model Cliente {
-  id        Int      @id @default(autoincrement())
-  nome      String
-  telefone  String
-  email     String
-  endereço String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  pets      Pet[] // relação 1 cliente pode ter mais de um pet
+  id           Int           @id @default(autoincrement())
+  nome         String
+  telefone     String
+  email        String
+  endereço    String
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  pets         Pet[] // relação 1 cliente pode ter mais de um pet
+  agendamentos Agendamento[]
 
   @@map("clientes")
 }
@@ -66,12 +68,24 @@ model Atendimento {
   @@map("atendimentos")
 }
 
-model solicitacao {
+model Solicitacao {
   id        Int      @id @default(autoincrement())
   descricao String
   status    String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  @@map("Solicitacao")
+  @@map("solicitacao")
+}
+
+model Agendamento {
+  id      Int      @id @default(autoincrement())
+  data    DateTime
+  servico String
+
+  clienteId Int
+  petId     Int
+
+  cliente Cliente @relation(fields: [clienteId], references: [id])
+  pet     Pet     @relation(fields: [petId], references: [id])
 }
