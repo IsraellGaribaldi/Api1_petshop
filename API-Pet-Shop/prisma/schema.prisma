@@ -34,6 +34,7 @@ model Cliente {
   endereço  String
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
+  solicitacoes Solicitacao[]
   pets      Pet[]    // relação 1 cliente pode ter mais de um pet
   @@map("clientes")
 }
@@ -66,7 +67,9 @@ model Solicitacao {
   id             Int          @id @default(autoincrement())
   descricao      String
   status         String
+  idcliente      Int
   createdAt      DateTime     @default(now())
-  updatedAt      DateTime     @updatedAt
+  updatedAt      DateTime     @updatedAt          
+  cliente        Cliente @relation(fields: [idcliente], references: [id])
   @@map("solicitacao")
 }
