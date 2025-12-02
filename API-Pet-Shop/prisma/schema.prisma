@@ -28,16 +28,16 @@ model Pet {
 
 // tabela dos clientes 
 model Cliente {
-  id           Int           @id @default(autoincrement())
-  nome         String
-  telefone     String
-  email        String
-  endereço    String
-  createdAt    DateTime      @default(now())
-  updatedAt    DateTime      @updatedAt
-  pets         Pet[] // relação 1 cliente pode ter mais de um pet
+  id        Int      @id @default(autoincrement())
+  nome      String
+  telefone  String
+  email     String
+  endereço  String
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  solicitacoes Solicitacao[]
   agendamentos Agendamento[]
-
+  pets      Pet[]    // relação 1 cliente pode ter mais de um pet
   @@map("clientes")
 }
 
@@ -69,12 +69,13 @@ model Atendimento {
 }
 
 model Solicitacao {
-  id        Int      @id @default(autoincrement())
-  descricao String
-  status    String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
+  id             Int          @id @default(autoincrement())
+  descricao      String
+  status         String
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+  clienteId      Int
+  cliente        Cliente      @relation(fields: [clienteId], references: [id])
   @@map("solicitacao")
 }
 
