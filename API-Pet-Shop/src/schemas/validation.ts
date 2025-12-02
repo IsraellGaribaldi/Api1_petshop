@@ -1,6 +1,18 @@
 // Importa a biblioteca Zod, que é usada para validação de esquemas.
 import { z } from "zod";
 
+export const createSolicitacaoSchema = z.object({
+  descricao: z.string().min(5, "A descrição é muito curta."),
+  status: z.string().nonempty("O status não pode ser vazio."),
+});
+
+// Schema de atualização: todos os campos são opcionais, permitindo atualizar apenas um.
+export const updateSolicitacaoSchema = z.object({
+  descricao: z.string().min(5, "A descrição é muito curta.").optional(),
+  status: z.string().nonempty("O status não pode ser vazio.").optional(),
+});
+
+
 // Define o esquema para a criação de um novo pet.
 export const createPetSchema = z.object({
   nome: z.string().min(2, "O nome deve ter no mínimo 2 caracteres").max(100),
@@ -55,6 +67,8 @@ export const idParamSchema = z.object({
 
 // Exporta os tipos inferidos dos esquemas Zod para serem usados no código TypeScript.
 // Isso garante a tipagem segura dos dados em todo o aplicativo.
+export type CreateSolicitacaoData = z.infer<typeof createSolicitacaoSchema>;
+export type UpdateSolicitacaoData = z.infer<typeof updateSolicitacaoSchema>;
 export type CreatePetData = z.infer<typeof createPetSchema>;
 export type UpdatePetData = z.infer<typeof updatePetSchema>;
 export type CreateClienteData = z.infer<typeof createClienteSchema>;
