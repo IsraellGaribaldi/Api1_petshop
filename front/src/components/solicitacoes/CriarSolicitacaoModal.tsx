@@ -78,7 +78,7 @@ export const CriarSolicitacaoModal = ({
 
     try {
       // Usamos validation.data que é a versão tipada e validada pelo Zod
-      const novaSolicitacao = await createSolicitacao(validation.data);
+      const novaSolicitacao = await createSolicitacao(validation.data!);
 
       onSuccess(novaSolicitacao);
       
