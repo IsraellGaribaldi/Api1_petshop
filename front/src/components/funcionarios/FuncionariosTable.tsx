@@ -15,7 +15,7 @@ interface Funcionario {
 
 export const FuncionariosTable: React.FC = () => {
     // estado que guarda a lista de funcionários (inicialmente vazia)
-    const [funcionarios, setFuncionarios] = useState<Funcionario[]>([]);
+    const [funcionarios] = useState<Funcionario[]>([]);
     // estado que controla o indicador de carregamento (spinner)
     const [loading, setLoading] = useState(false);
     // controla se a modal de criar/editar está visível
@@ -74,7 +74,7 @@ export const FuncionariosTable: React.FC = () => {
     };
 
     // deleta um funcionário (chamada à API comentada)
-    const handleDelete = async (id: number) => {
+    const handleDelete = async (_id: number) => {
         try {
             // await api.delete(`/funcionarios/${id}`); // chamada real à API
             message.success('Funcionário deletado com sucesso');
@@ -85,7 +85,7 @@ export const FuncionariosTable: React.FC = () => {
     };
 
     // salva (cria ou atualiza) um funcionário com base nos valores do formulário
-    const handleSave = async (values: Funcionario) => {
+    const handleSave = async (_values: Funcionario) => {
         try {
             // se editingId existe, seria um PUT para atualizar; caso contrário POST para criar
             // if (editingId) {
