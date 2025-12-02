@@ -80,13 +80,10 @@ model Solicitacao {
 }
 
 model Agendamento {
-  id      Int      @id @default(autoincrement())
-  data    DateTime
-  servico String
-
-  clienteId Int
-  petId     Int
-
-  cliente Cliente @relation(fields: [clienteId], references: [id])
-  pet     Pet     @relation(fields: [petId], references: [id])
+  id          Int      @id @default(autoincrement())
+  cliente     String
+  pet         String
+  servico     String
+  data        DateTime
+  criadoEm    DateTime @default(now())
 }
